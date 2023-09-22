@@ -2,10 +2,6 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from PIL import Image
-
-face = Image.open("face.png")
-st.set_page_config(page_title='다이오뚜', page_icon=face, layout="centered", initial_sidebar_state="auto", menu_items=None)
 
 
 # 그래프 생성
@@ -107,8 +103,6 @@ col2.title("적정 칼로리 및 식단 관리")
 
 # 키와 몸무게 입력
 height = st.text_input("키를 입력해주세요 (cm):")
-if height:
-    st.session_state['height'] = height
 weight = st.text_input("몸무게를 입력해주세요 (kg):")
 
 reccal = 0
@@ -139,8 +133,6 @@ if height and weight:
         
         fat = reccal * 0.2 / 9
         st.markdown(f"**권장 지방**: {fat:.2f}g")
-
-
 
 
 # 세션 상태 초기화
