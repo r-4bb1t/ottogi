@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  diet-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: diet
+    container_name: diet-api
+    ports:
+      - 8501:8501
+    env_file:
+      - .env
+    depends_on:
+      diet-db:
+        condition: service_healthy
+    restart: always
+
+  diet-db:
+    container_name: diet-db
+    image: postgres:14-alpine
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./database/:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
