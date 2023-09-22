@@ -1,7 +1,9 @@
+import math
+
 # 표준체중(BMI)
 def calculate_bmi(height):
     result = height * height * 0.0021
-    return result
+    return math.floor(result)
 
 # 권장칼로리
 def calculate_cal(height):
