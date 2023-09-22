@@ -88,6 +88,8 @@ col2.title("적정 칼로리 및 식단 관리")
 
 # 키와 몸무게 입력
 height = st.text_input("키를 입력해주세요 (cm):")
+if height:
+    st.session_state['height'] = height
 weight = st.text_input("몸무게를 입력해주세요 (kg):")
 
 reccal = 0
