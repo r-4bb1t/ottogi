@@ -2,6 +2,10 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from PIL import Image 
+
+face = Image.open("face.png")
+st.set_page_config(page_title='다이오뚜', page_icon=face, layout="centered", initial_sidebar_state="auto", menu_items=None)
 
 # 그래프 생성
 def display_graph():

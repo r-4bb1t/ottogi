@@ -6,6 +6,9 @@ from components.layout import layout
 import copy
 import texts
 
+face = Image.open("face.png")
+st.set_page_config(page_title='다이오뚜', page_icon=face, layout="centered", initial_sidebar_state="auto", menu_items=None)
+
 layout()
 
 openai_api_key = config('OPENAI_KEY')
