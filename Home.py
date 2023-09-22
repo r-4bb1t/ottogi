@@ -35,6 +35,8 @@ col2.title("적정 칼로리 및 식단 관리")
 
 # 키와 몸무게 입력
 height = st.text_input("키를 입력해주세요 (cm):")
+if height:
+    st.session_state.height = height
 weight = st.text_input("몸무게를 입력해주세요 (kg):")
 
 
@@ -83,7 +85,6 @@ for meal_type in ["아침", "점심", "저녁"]:
         st.write(f"{meal_type} 음식 리스트: {', '.join(st.session_state.food_list[meal_type])}")
 
 st.write(f"오늘 섭취한 총 칼로리: {st.session_state.total_calories}Kcal")
-
 
 
 # 추천 시스템

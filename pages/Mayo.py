@@ -24,7 +24,7 @@ if "messages" not in st.session_state:
     st.session_state["messages"] = [{"role": "assistant", "content": "레시피 추천은 마요에게 맡겨주세요!"}]
     
 if 'height' not in st.session_state or 'total_calories' not in st.session_state:
-    st.caption('홈에서 키와 몸무게 정보, 식단을 입력한 후 사용해 주세요.')
+    st.caption('홈에서 키 정보, 식단을 입력한 후 사용해 주세요.')
 else:
     for msg in st.session_state.messages:
         st.chat_message(msg["role"], avatar=avatar[msg["role"]]).write(msg["content"])
@@ -37,7 +37,7 @@ else:
         messages = copy.deepcopy(st.session_state.messages)
         messages[-1]['content'] = texts.recipes() + texts.userinfo(int(st.session_state['height']), 
                                                                  int(st.session_state['total_calories'])) + texts.res + messages[-1]['content']
-        response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages)
+        response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages[-2:])
         msg = response.choices[0].message
         st.session_state.messages.append(msg)
         st.chat_message("assistant", avatar=avatar['assistant']).write(msg['content'])
