@@ -2,6 +2,9 @@ import openai
 import streamlit as st
 from decouple import config
 from PIL import Image
+from components.layout import layout
+
+layout()
 
 openai_api_key = config('OPENAI_KEY')
 

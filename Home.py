@@ -1,5 +1,8 @@
 import streamlit as st
 from PIL import Image
+from components.layout import layout
+
+layout()
 
 st.markdown(
     """
