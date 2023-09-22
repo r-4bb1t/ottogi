@@ -43,13 +43,13 @@ def calculate_weightav(height):
 # 음식 검색 및 추가
 def search_food(session_state, meal_type):
     food_name = st.text_input(f"{meal_type}에 먹은 음식:", key=f"{meal_type}_input")
-    if food_name in food_data:
+    if food_name in food_data and food_name not in session_state.food_list[meal_type]:
         st.write(f"음식 이름: {food_name}")
         for nutrient, value in food_data[food_name].items():
             st.write(f"{nutrient}: {value}")
-        session_state.total_calories += food_data[food_name]["에너지(kcal)"]  # 수정된 부분
+        session_state.total_calories += food_data[food_name]["에너지(kcal)"]
         session_state.food_list[meal_type].append(food_name)
-
+        
 # 섭취 가능한 칼로리와 가장 가까운 제품 5개 추천
 def recommend_foods():
     ottogi_data_df['distance'] = np.sqrt(
