@@ -1,0 +1,4 @@
+.stChatMessage img:not(:first-child) {
+    width: 400px;
+    display: block;
+}

@@ -5,9 +5,18 @@ from PIL import Image
 import copy
 import texts
 
+
 face = Image.open("face.png")
 st.set_page_config(page_title='다이오뚜', page_icon=face, layout="centered", initial_sidebar_state="auto", menu_items=None)
 st.image("logo.png", width=100) 
+
+
+# CSS 파일의 내용을 읽어옴
+with open('styles.css', 'r') as f:
+    css = f.read()
+
+# Streamlit 앱에 CSS 적용
+st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
 openai_api_key = config('OPENAI_KEY')
 
