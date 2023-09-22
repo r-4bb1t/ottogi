@@ -15,5 +15,5 @@ pip install -r requirements.txt
 
 ## RUN
 ```shell
-docker compose up --build
+streamlit run Home.py
 ```
