@@ -2,10 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from PIL import Image 
 
-face = Image.open("face.png")
-st.set_page_config(page_title='다이오뚜', page_icon=face, layout="centered", initial_sidebar_state="auto", menu_items=None)
 
 # 그래프 생성
 def display_graph():
@@ -17,7 +14,7 @@ def display_graph():
     fats = sum(food_data[food]["총 지방(g)"] for meal in ["아침", "점심", "저녁"] for food in st.session_state.get(meal + "_foods", []))
     proteins = sum(food_data[food]["단백질(g)"] for meal in ["아침", "점심", "저녁"] for food in st.session_state.get(meal + "_foods", []))
     
-    nutrients = ["탄수화물(g)", "단백질(g)", "지방(g)"]
+    nutrients = ["탄수화물(g)", "단백질(g)", "총 지방(g)"]
     intake = {nutrient: 0 for nutrient in nutrients}
     
     for meal_type in ["아침", "점심", "저녁"]:
@@ -54,17 +51,24 @@ def search_food(session_state, meal_type):
         session_state.total_calories += food_data[food_name]["에너지(kcal)"]
         session_state.food_list[meal_type].append(food_name)
         
-# 섭취 가능한 칼로리와 가장 가까운 제품 5개 추천
 def recommend_foods():
     ottogi_data_df['distance'] = np.sqrt(
-        (ottogi_data_df['에너지(kcal)'] - remaining_calories)**2 +
+        (ottogi_data_df['칼로리(kcal)'] - remaining_calories)**2 +
         (ottogi_data_df['탄수화물(g)'] - remaining_carbs)**2 +
         (ottogi_data_df['단백질(g)'] - remaining_proteins)**2 +
-        (ottogi_data_df['지방(g)'] - remaining_fats)**2
+        (ottogi_data_df['총 지방(g)'] - remaining_fats)**2
     )
     recommended = ottogi_data_df.nsmallest(5, 'distance')
     st.write("추천 음식:")
-    st.write(recommended)
+    
+    for _, row in recommended.iterrows():
+        # 이미지와 음식 이름을 링크로 표시
+        st.markdown(f"""
+        <div style="display: flex; align-items: center;">
+            <img src="{row['이미지_링크']}" width="50" height="50" style="margin-right: 10px;">
+            <a href="{row['음식_링크']}" target="_blank">{row['음식_이름']}</a>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 ################################################
@@ -77,7 +81,7 @@ pro = 0
 fat = 0
 # CSV 파일에서 음식 데이터 읽어오기
 food_data_df = pd.read_csv('전국통합식품영양성분정보(음식).csv', encoding='cp949')
-food_data = food_data_df.set_index('식품명').T.to_dict()
+food_data = food_data_df.set_index('음식_이름').T.to_dict()
 
 
 col1, col2 = st.columns([1, 6]) 
@@ -88,8 +92,6 @@ col2.title("적정 칼로리 및 식단 관리")
 
 # 키와 몸무게 입력
 height = st.text_input("키를 입력해주세요 (cm):")
-if height:
-    st.session_state['height'] = height
 weight = st.text_input("몸무게를 입력해주세요 (kg):")
 
 reccal = 0
@@ -152,8 +154,8 @@ remaining_proteins = pro - proteins
 remaining_fats = fat - fats
 
 # CSV 파일에서 오뚜기 음식 데이터 읽어오기
-ottogi_data_df = pd.read_csv('오뚜기.csv', encoding='cp949')
-ottogi_data = ottogi_data_df.set_index('식품명').T.to_dict()  # '음식 이름' 대신 '식품명' 사용
+ottogi_data_df = pd.read_csv('오뚜기.csv', encoding='utf-8')
+ottogi_data = ottogi_data_df.set_index('음식_이름').T.to_dict()
 
 # 섭취 가능한 칼로리와 가장 가까운 제품 5개 추천
 recommend_foods()
