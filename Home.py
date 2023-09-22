@@ -2,11 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from PIL import Image
 
-
-face = Image.open("face.png")
-st.set_page_config(page_title='다이오뚜', page_icon=face, layout="centered", initial_sidebar_state="auto", menu_items=None)
 
 # 그래프 생성
 def display_graph():
@@ -55,6 +51,7 @@ def search_food(session_state, meal_type):
         session_state.total_calories += food_data[food_name]["에너지(kcal)"]
         session_state.food_list[meal_type].append(food_name)
         
+
 def recommend_foods():
     ottogi_data_df['distance'] = np.sqrt(
         (ottogi_data_df['칼로리(kcal)'] - remaining_calories)**2 +
@@ -63,16 +60,26 @@ def recommend_foods():
         (ottogi_data_df['총 지방(g)'] - remaining_fats)**2
     )
     recommended = ottogi_data_df.nsmallest(5, 'distance')
-    st.write("추천 음식:")
+    
+    # 추천 음식 데이터 프레임 생성
+    columns = ["이미지", "음식_이름", "칼로리(kcal)", "탄수화물(g)", "단백질(g)", "총 지방(g)"]
+    df = pd.DataFrame(columns=columns)
     
     for _, row in recommended.iterrows():
-        # 이미지와 음식 이름을 링크로 표시
-        st.markdown(f"""
-        <div style="display: flex; align-items: center;">
-            <img src="{row['이미지_링크']}" width="50" height="50" style="margin-right: 10px;">
-            <a href="{row['음식_링크']}" target="_blank">{row['음식_이름']}</a>
-        </div>
-        """, unsafe_allow_html=True)
+        image = f'<img src="{row["이미지_링크"]}" width="50" height="50">'
+        name = f'<a href="{row["음식_링크"]}" target="_blank">{row["음식_이름"]}</a>'
+        df = df.append({
+            "이미지": image,
+            "음식_이름": name,
+            "칼로리(kcal)": row["칼로리(kcal)"],
+            "탄수화물(g)": row["탄수화물(g)"],
+            "단백질(g)": row["단백질(g)"],
+            "총 지방(g)": row["총 지방(g)"]
+        }, ignore_index=True)
+    
+    # 데이터 프레임 표시
+    st.write("추천 음식:")
+    st.write(df.to_html(escape=False), unsafe_allow_html=True)
 
 
 ################################################
@@ -158,7 +165,7 @@ remaining_proteins = pro - proteins
 remaining_fats = fat - fats
 
 # CSV 파일에서 오뚜기 음식 데이터 읽어오기
-ottogi_data_df = pd.read_csv('오뚜기.csv', encoding='utf-8')
+ottogi_data_df = pd.read_csv('오뚜기.csv', encoding='cp949')
 ottogi_data = ottogi_data_df.set_index('음식_이름').T.to_dict()
 
 # 섭취 가능한 칼로리와 가장 가까운 제품 5개 추천
