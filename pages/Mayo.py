@@ -19,12 +19,12 @@ col1, mid, col2 = st.columns([1,2,20])
 with col1:
     st.image(mayo, width=100)
 with col2:
-    st.title("다이어트 코치 마요")
+    st.title("레시피 추천 요정 마요")
 if "messages" not in st.session_state:
     st.session_state["messages"] = [{"role": "assistant", "content": "레시피 추천은 마요에게 맡겨주세요!"}]
     
 if 'height' not in st.session_state or 'total_calories' not in st.session_state:
-    st.text('홈에서 키와 몸무게 정보, 식단을 입력한 후 사용해 주세요.')
+    st.caption('홈에서 키와 몸무게 정보, 식단을 입력한 후 사용해 주세요.')
 else:
     for msg in st.session_state.messages:
         st.chat_message(msg["role"], avatar=avatar[msg["role"]]).write(msg["content"])
