@@ -38,10 +38,7 @@ if prompt := st.chat_input():
     msg = response.choices[0].message
     data = json.loads(msg['content'])
     parsed = copy.deepcopy(msg)
-    parsed['content'] = data['answer']
+    print(data)
+    parsed['content'] = '{content}'.format(content=data['answer']) + '\n' + '\n'.join(('- {url}'.format(url=url)) for url in data['url'])
     st.session_state.messages.append(parsed)
-    st.chat_message("assistant", avatar=avatar['assistant']).write(parsed.content)
-    print(data['url'])
-    st.subheader('링크')
-    for url in data['url']:
-        st.markdown("- {}".format(url)) 
+    st.chat_message("assistant", avatar=avatar['assistant']).write(parsed['content'])
