@@ -53,13 +53,13 @@ def search_food(session_state, meal_type):
         
 
 def recommend_foods():
-    ottogi_data_df['distance'] = np.sqrt(
-        (ottogi_data_df['칼로리(kcal)'] - remaining_calories)**2 +
-        (ottogi_data_df['탄수화물(g)'] - remaining_carbs)**2 +
-        (ottogi_data_df['단백질(g)'] - remaining_proteins)**2 +
-        (ottogi_data_df['총 지방(g)'] - remaining_fats)**2
+    combined_data_df['distance'] = np.sqrt(
+        (combined_data_df['칼로리(kcal)'] - remaining_calories)**2 +
+        (combined_data_df['탄수화물(g)'] - remaining_carbs)**2 +
+        (combined_data_df['단백질(g)'] - remaining_proteins)**2 +
+        (combined_data_df['총 지방(g)'] - remaining_fats)**2
     )
-    recommended = ottogi_data_df.nsmallest(5, 'distance')
+    recommended = combined_data_df.nsmallest(5, 'distance')
     
     # 추천 음식 데이터 프레임 생성
     columns = ["이미지", "음식_이름", "칼로리(kcal)", "탄수화물(g)", "단백질(g)", "총 지방(g)"]
@@ -76,11 +76,9 @@ def recommend_foods():
             "단백질(g)": row["단백질(g)"],
             "총 지방(g)": row["총 지방(g)"]
         }, ignore_index=True)
-    
     # 데이터 프레임 표시
     st.write("추천 음식:")
     st.write(df.to_html(escape=False), unsafe_allow_html=True)
-
 
 ################################################
 
@@ -135,6 +133,8 @@ if height and weight:
         st.markdown(f"**권장 지방**: {fat:.2f}g")
 
 
+
+
 # 세션 상태 초기화
 if not hasattr(st.session_state, 'food_list'):
     st.session_state.food_list = {"아침": [], "점심": [], "저녁": []}
@@ -164,7 +164,23 @@ remaining_fats = fat - fats
 
 # CSV 파일에서 오뚜기 음식 데이터 읽어오기
 ottogi_data_df = pd.read_csv('오뚜기.csv', encoding='cp949')
+
+# CSV 파일에서 오제품 음식 데이터 읽어오기
+oje_data_df = pd.read_csv('오제품.csv', encoding='cp949')
+
+# 두 데이터프레임에서 공통된 컬럼만 사용하여 병합
+combined_data_df = pd.concat([ottogi_data_df, oje_data_df], join='inner', ignore_index=True)
+# '칼로리(kcal)' 컬럼의 값을 숫자로 변환
+combined_data_df['칼로리(kcal)'] = pd.to_numeric(combined_data_df['칼로리(kcal)'], errors='coerce')
+
 ottogi_data = ottogi_data_df.set_index('음식_이름').T.to_dict()
+
+# 알러지 원재료 입력
+allergic_ingredient = st.text_input("알러지 반응이 일어나는 원재료를 입력하세요:")
+
+# 알러지 원재료를 기반으로 오제품 데이터 필터링
+if allergic_ingredient:
+    oje_data_df = oje_data_df[~oje_data_df['원재료 및 원산지'].str.contains(allergic_ingredient, na=False, case=False)]
 
 # 섭취 가능한 칼로리와 가장 가까운 제품 5개 추천
 recommend_foods()
