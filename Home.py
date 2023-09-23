@@ -186,7 +186,7 @@ remaining_proteins = pro - proteins
 remaining_fats = fat - fats
 
 # CSV 파일에서 오뚜기 음식 데이터 읽어오기
-ottogi_data_df = pd.read_csv('오뚜기.csv', encoding='cp949')
+ottogi_data_df = pd.read_csv('오뚜기.csv', encoding='UTF-8')
 
 # CSV 파일에서 오제품 음식 데이터 읽어오기
 oje_data_df = pd.read_csv('오제품.csv', encoding='cp949')
