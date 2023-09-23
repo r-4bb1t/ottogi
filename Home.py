@@ -58,9 +58,21 @@ def search_food(session_state, meal_type):
         
 
 def recommend_foods():
+    global oje_data_df
+
+    # '원재료 및 원산지' 컬럼을 기반으로 오제품 데이터에서 알러지 원재료를 포함하는 음식을 제거
+    if allergic_ingredient and '원재료 및 원산지' in oje_data_df.columns:
+        oje_data_df = oje_data_df[~oje_data_df['원재료 및 원산지'].str.contains(allergic_ingredient, na=False, case=False)]
+
+    # 두 데이터프레임에서 공통된 컬럼만 사용하여 병합
+    combined_data_df = pd.concat([ottogi_data_df, oje_data_df], join='inner', ignore_index=True)
+
+    # '칼로리(kcal)' 컬럼의 값을 숫자로 변환
+    combined_data_df['칼로리(kcal)'] = pd.to_numeric(combined_data_df['칼로리(kcal)'], errors='coerce')
+
     combined_data_df['distance'] = np.sqrt(
         (combined_data_df['칼로리(kcal)'] - remaining_calories)**2 +
-        (combined_data_df['탄수화물(g)'] - remaining_carbs)**2 +
+       (combined_data_df['탄수화물(g)'] - remaining_carbs)**2 +
         (combined_data_df['단백질(g)'] - remaining_proteins)**2 +
         (combined_data_df['총 지방(g)'] - remaining_fats)**2
     )
