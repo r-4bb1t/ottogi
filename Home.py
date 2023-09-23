@@ -73,14 +73,14 @@ def recommend_foods():
     for _, row in recommended.iterrows():
         image = f'<img src="{row["이미지_링크"]}" width="50" height="50">'
         name = f'<a href="{row["음식_링크"]}" target="_blank">{row["음식_이름"]}</a>'
-        df = df.append({
+        df.loc[len(df)] = {
             "이미지": image,
             "음식_이름": name,
             "칼로리(kcal)": row["칼로리(kcal)"],
             "탄수화물(g)": row["탄수화물(g)"],
             "단백질(g)": row["단백질(g)"],
             "총 지방(g)": row["총 지방(g)"]
-        }, ignore_index=True)
+        }
     # 데이터 프레임 표시
     st.write("추천 음식:")
     st.write(df.to_html(escape=False), unsafe_allow_html=True)
