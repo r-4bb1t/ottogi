@@ -9,6 +9,10 @@ face = Image.open("face.png")
 st.set_page_config(page_title='다이오뚜', page_icon=face, layout="centered", initial_sidebar_state="auto", menu_items=None)
 
 
+with open('global.css', 'r') as f:
+    css = f.read()
+    st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+
 # 그래프 생성
 def display_graph():
     global carbs, fats, proteins  # 이 부분 추가

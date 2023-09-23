@@ -5,16 +5,17 @@ from PIL import Image
 import copy
 import texts
 
-
 face = Image.open("face.png")
 st.set_page_config(page_title='다이오뚜', page_icon=face, layout="centered", initial_sidebar_state="auto", menu_items=None)
 st.image("logo.png", width=100) 
 
 
-with open('styles.css', 'r') as f:
+with open('mayo.css', 'r') as f:
     css = f.read()
-
-st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+    st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+with open('global.css', 'r') as f:
+    css = f.read()
+    st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
 openai_api_key = config('OPENAI_KEY')
 
