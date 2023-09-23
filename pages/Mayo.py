@@ -40,7 +40,7 @@ else:
         st.chat_message(msg["role"], avatar=avatar[msg["role"]]).write(msg["content"])
 
 
-    if prompt := st.chat_input():
+    if prompt := st.chat_input(placeholder="오이가 안 들어가는 레시피 알려줘."):
         openai.api_key = openai_api_key
         st.session_state.messages.append({"role": "user", "content": prompt})
         st.chat_message("user", avatar=avatar['user']).write(prompt)
