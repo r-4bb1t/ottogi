@@ -9,10 +9,6 @@ face = Image.open("face.png")
 st.set_page_config(page_title='다이오뚜', page_icon=face, layout="centered", initial_sidebar_state="auto", menu_items=None)
 
 
-with open('global.css', 'r') as f:
-    css = f.read()
-    st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
-
 # 그래프 생성
 def display_graph():
     global carbs, fats, proteins  # 이 부분 추가
@@ -43,23 +39,22 @@ def display_food_list():
     
     st.write("### 오늘 섭취한 음식:")
     for food in all_foods:
-        st.write(f"* {food}  {food_data[food]['에너지(kcal)']}kcal")
+        st.write(f"* {food}  {food_data[food]['칼로리(kcal)']}kcal")
 
 # 표준체중 계산 함수
 def calculate_weightav(height):
     result = height * height * 0.0021
     return result
 
-# 음식 검색 및 추가
+# 음식 검색 및 추가 함수에서 칼로리 정보를 참조할 때
 def search_food(session_state, meal_type):
     food_name = st.text_input(f"{meal_type}에 먹은 음식:", key=f"{meal_type}_input")
     if food_name in food_data and food_name not in session_state.food_list[meal_type]:
         st.write(f"음식 이름: {food_name}")
         for nutrient, value in food_data[food_name].items():
             st.write(f"{nutrient}: {value}")
-        session_state.total_calories += food_data[food_name]["에너지(kcal)"]
-        session_state.food_list[meal_type].append(food_name)
-        
+        session_state.total_calories += food_data[food_name]["칼로리(kcal)"]
+        session_state.food_list[meal_type].append(food_name) 
 
 def recommend_foods():
     global oje_data_df
@@ -112,8 +107,6 @@ fat = 0
 # CSV 파일에서 음식 데이터 읽어오기
 food_data_df = pd.read_csv('전국통합식품영양성분정보(음식).csv', encoding='cp949')
 food_data = food_data_df.set_index('음식_이름').T.to_dict()
-
-
 col1, col2 = st.columns([1, 6]) 
 col1.image("ch2.png", width=110)  # width를 조정하여 아이콘 크기를 변경할 수 있습니다.
 
@@ -186,7 +179,7 @@ remaining_proteins = pro - proteins
 remaining_fats = fat - fats
 
 # CSV 파일에서 오뚜기 음식 데이터 읽어오기
-ottogi_data_df = pd.read_csv('오뚜기.csv', encoding='UTF-8')
+ottogi_data_df = pd.read_csv('오뚜기.csv', encoding='cp949')
 
 # CSV 파일에서 오제품 음식 데이터 읽어오기
 oje_data_df = pd.read_csv('오제품.csv', encoding='cp949')
