@@ -41,4 +41,4 @@ def userinfo(height, today):
 나의 키와 체중에 맞는 권장 칼로리는 {cal}kcal이며, 필요한 영양 정보는 {nut} 오늘 섭취한 칼로리는 {today}kcal이다.
 '''.format(cal=calculate_cal(height), nut=calculate_nut(height), today=today)
 
-res = '''마크다운 형식으로 답변하되, 각 레시피의 URL과 이미지를 표시하라.'''
+res = '''마크다운 형식으로 답변하되, 각 레시피의 URL과 이미지를 포함하라.'''
