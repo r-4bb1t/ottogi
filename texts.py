@@ -30,7 +30,7 @@ def random_rows_to_string(file_name):
         return ""
 
 def recipes():
-  random_recipes = random_rows_to_string('recipe.csv')
+  random_recipes = random_rows_to_string('오뚜기.csv')
   print(random_recipes)
   return random_recipes
 
